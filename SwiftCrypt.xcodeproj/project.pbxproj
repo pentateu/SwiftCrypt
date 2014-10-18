@@ -13,6 +13,12 @@
 		53C3628519F0A0E300595507 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53C3628419F0A0E300595507 /* Images.xcassets */; };
 		53C3628819F0A0E300595507 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53C3628619F0A0E300595507 /* LaunchScreen.xib */; };
 		53C3629419F0A0E400595507 /* SwiftCryptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3629319F0A0E400595507 /* SwiftCryptTests.swift */; };
+		53C362A019F0A11000595507 /* KeyPairService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3629D19F0A11000595507 /* KeyPairService.swift */; };
+		53C362A119F0A11000595507 /* KeyPairService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3629D19F0A11000595507 /* KeyPairService.swift */; };
+		53C362A219F0A11000595507 /* SecKeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3629E19F0A11000595507 /* SecKeyService.swift */; };
+		53C362A319F0A11000595507 /* SecKeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3629E19F0A11000595507 /* SecKeyService.swift */; };
+		53C362A419F0A11000595507 /* SymmetricKeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3629F19F0A11000595507 /* SymmetricKeyService.swift */; };
+		53C362A519F0A11000595507 /* SymmetricKeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3629F19F0A11000595507 /* SymmetricKeyService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +42,9 @@
 		53C3628D19F0A0E400595507 /* SwiftCryptTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftCryptTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		53C3629219F0A0E400595507 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		53C3629319F0A0E400595507 /* SwiftCryptTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftCryptTests.swift; sourceTree = "<group>"; };
+		53C3629D19F0A11000595507 /* KeyPairService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyPairService.swift; sourceTree = "<group>"; };
+		53C3629E19F0A11000595507 /* SecKeyService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecKeyService.swift; sourceTree = "<group>"; };
+		53C3629F19F0A11000595507 /* SymmetricKeyService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SymmetricKeyService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +86,9 @@
 		53C3627A19F0A0E300595507 /* SwiftCrypt */ = {
 			isa = PBXGroup;
 			children = (
+				53C3629D19F0A11000595507 /* KeyPairService.swift */,
+				53C3629E19F0A11000595507 /* SecKeyService.swift */,
+				53C3629F19F0A11000595507 /* SymmetricKeyService.swift */,
 				53C3627D19F0A0E300595507 /* AppDelegate.swift */,
 				53C3627F19F0A0E300595507 /* ViewController.swift */,
 				53C3628119F0A0E300595507 /* Main.storyboard */,
@@ -214,6 +226,9 @@
 			files = (
 				53C3628019F0A0E300595507 /* ViewController.swift in Sources */,
 				53C3627E19F0A0E300595507 /* AppDelegate.swift in Sources */,
+				53C362A019F0A11000595507 /* KeyPairService.swift in Sources */,
+				53C362A219F0A11000595507 /* SecKeyService.swift in Sources */,
+				53C362A419F0A11000595507 /* SymmetricKeyService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,7 +236,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53C362A319F0A11000595507 /* SecKeyService.swift in Sources */,
 				53C3629419F0A0E400595507 /* SwiftCryptTests.swift in Sources */,
+				53C362A119F0A11000595507 /* KeyPairService.swift in Sources */,
+				53C362A519F0A11000595507 /* SymmetricKeyService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
