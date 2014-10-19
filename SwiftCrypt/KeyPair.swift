@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import Security
 
-class KeyPairService:SecKeyService {
+class KeyPair: SecKeyBase {
 
     let kSecPrivateKeyAttrsValue = kSecPrivateKeyAttrs.takeUnretainedValue() as NSCopying
     let kSecPublicKeyAttrsValue = kSecPublicKeyAttrs.takeUnretainedValue() as NSCopying

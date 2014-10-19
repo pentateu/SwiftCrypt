@@ -27,16 +27,16 @@ class SwiftCryptTests: XCTestCase {
     }
     
     func testWrapAndUnwrapSymmetricKey(){
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
-        keyPairService.generateKeyPair();
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        keyPair.generateKeyPair();
         
-        let symmetricKeyService = SymmetricKeyService(symmetricTagIdentifier: "symmetric.key")
-        symmetricKeyService.generateSymmetricKey()
+        let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key")
+        symmetricKey.generateSymmetricKey()
         
         println("symmetric key (plain): ")
-        prettyPrint(symmetricKeyService.getSymmetricKeyBits()!)
+        prettyPrint(symmetricKey.getSymmetricKeyBits()!)
         
-        let wrappedKey = symmetricKeyService.wrapSymmetricKey(keyPairService.getPublicKeyRef()!)
+        let wrappedKey = symmetricKey.wrapSymmetricKey(keyPair.getPublicKeyRef()!)
         
         println("symmetric key (wrappedKey): ")
         prettyPrint(wrappedKey!)
@@ -44,143 +44,143 @@ class SwiftCryptTests: XCTestCase {
         XCTAssert(wrappedKey != nil, "Has symmetricKeyRef")
         XCTAssert(wrappedKey?.length == 128, "Result the right size")
         
-        let unwrappedKey = symmetricKeyService.unwrapSymmetricKey(keyPairService.getPrivateKeyRef()!, wrappedSymmetricKey: wrappedKey!)
+        let unwrappedKey = symmetricKey.unwrapSymmetricKey(keyPair.getPrivateKeyRef()!, wrappedSymmetricKey: wrappedKey!)
         
         println("symmetric key (unwrappedKey): ")
         prettyPrint(unwrappedKey!)
         
         var boolCheck:Bool = false
-        if let originalKey = symmetricKeyService.getSymmetricKeyBits() {
+        if let originalKey = symmetricKey.getSymmetricKeyBits() {
             boolCheck = originalKey.isEqualToData(unwrappedKey!)
         }
         XCTAssert(boolCheck, "wrappedKey and unwrappedKey are equal")
     }
     
-    func assertSymmetricKey(symmetricKeyService:SymmetricKeyService){
-        XCTAssert(symmetricKeyService.symmetricKeyRef != nil, "Has symmetricKeyRef")
-        XCTAssert(symmetricKeyService.symmetricKeyRef?.length == 16, "The symmetricKeyRef has 16 bytes")
+    func assertSymmetricKey(symmetricKey:SymmetricKey){
+        XCTAssert(symmetricKey.symmetricKeyRef != nil, "Has symmetricKeyRef")
+        XCTAssert(symmetricKey.symmetricKeyRef?.length == 16, "The symmetricKeyRef has 16 bytes")
         
-        var keyBits = symmetricKeyService.getSymmetricKeyBits()
+        var keyBits = symmetricKey.getSymmetricKeyBits()
         XCTAssert(keyBits != nil, "Has symmetricKeyRef")
         XCTAssert(keyBits?.length == 16, "The symmetricKeyRef has 16 bytes")
     }
     
     func testGenerateSymmetricKey() {
-        let symmetricKeyService = SymmetricKeyService(symmetricTagIdentifier: "symmetric.key")
-        symmetricKeyService.generateSymmetricKey()
+        let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key")
+        symmetricKey.generateSymmetricKey()
         
-        assertSymmetricKey(symmetricKeyService)
+        assertSymmetricKey(symmetricKey)
         
-        let anotherInstance = SymmetricKeyService(symmetricTagIdentifier: "symmetric.key")
+        let anotherInstance = SymmetricKey(symmetricTagIdentifier: "symmetric.key")
         
         assertSymmetricKey(anotherInstance)
     }
     
     func testDeleteSymmetricKey() {
-        let symmetricKeyService = SymmetricKeyService(symmetricTagIdentifier: "symmetric.key")
-        symmetricKeyService.deleteSymmetricKey()
+        let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key")
+        symmetricKey.deleteSymmetricKey()
         
-        let key = symmetricKeyService.getSymmetricKeyBits()
+        let key = symmetricKey.getSymmetricKeyBits()
         
         XCTAssert(key == nil, "Has no key")
     }
     
     func testDeleteKeyPair() {
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key");
-        keyPairService.deleteKeyPair()
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key");
+        keyPair.deleteKeyPair()
         
-        let pubKey = keyPairService.getPublicKeyRef()
+        let pubKey = keyPair.getPublicKeyRef()
         
         XCTAssert(pubKey == nil, "Has no public key")
         
-        let privateKey = keyPairService.getPrivateKeyRef()
+        let privateKey = keyPair.getPrivateKeyRef()
         
         XCTAssert(privateKey == nil, "Has no private key")
     }
     
     func testCreatePublicKeyQueryParams() {
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
         
-        let dic = keyPairService.createPublicKeyQueryParams()
+        let dic = keyPair.createPublicKeyQueryParams()
         
         XCTAssert(dic.count == 3, "Has right number of items");
         
-        XCTAssert(dic.objectForKey(kSecAttrApplicationTag) as NSData == keyPairService.publicTag, "Has correct tag")
+        XCTAssert(dic.objectForKey(kSecAttrApplicationTag) as NSData == keyPair.publicTag, "Has correct tag")
     }
     
     func testCreatePrivateKeyQueryParams() {
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
         
-        let dic = keyPairService.createPrivateKeyQueryParams()
+        let dic = keyPair.createPrivateKeyQueryParams()
         
         XCTAssert(dic.count == 3, "Has right number of items");
         
-        XCTAssert(dic.objectForKey(kSecAttrApplicationTag) as NSData == keyPairService.privateTag, "Has correct tag")
+        XCTAssert(dic.objectForKey(kSecAttrApplicationTag) as NSData == keyPair.privateTag, "Has correct tag")
     }
     
     func testGenerateKeyPair() {
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
             
-        keyPairService.generateKeyPair();
+        keyPair.generateKeyPair();
         
-        XCTAssert(keyPairService.getPublicKeyRef() != nil, "Has public key");
-        XCTAssert(keyPairService.getPrivateKeyRef() != nil, "Has private key");
+        XCTAssert(keyPair.getPublicKeyRef() != nil, "Has public key");
+        XCTAssert(keyPair.getPrivateKeyRef() != nil, "Has private key");
         
-        let newInstance = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        let newInstance = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
         XCTAssert(newInstance.getPublicKeyRef() != nil, "Has public key");
         XCTAssert(newInstance.getPrivateKeyRef() != nil, "Has private key");
         
     }
     
     func testGetPublicKeyBits(){
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
-        keyPairService.generateKeyPair();
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        keyPair.generateKeyPair();
         
-        let keyBits = keyPairService.getPublicKeyBits()
+        let keyBits = keyPair.getPublicKeyBits()
         XCTAssert(keyBits?.length > 0, "Has some data");
     }
     
     func testGetPrivateKeyBits(){
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
-        keyPairService.generateKeyPair();
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        keyPair.generateKeyPair();
         
-        let keyBits = keyPairService.getPrivateKeyBits()
+        let keyBits = keyPair.getPrivateKeyBits()
         XCTAssert(keyBits?.length > 0, "Has some data");
     }
     
     func testGetPrivateKeyRef(){
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
-        keyPairService.generateKeyPair();
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        keyPair.generateKeyPair();
         
-        let keyBits = keyPairService.getPrivateKeyRef()
+        let keyBits = keyPair.getPrivateKeyRef()
         XCTAssert(keyBits != nil , "Has key ref");
     }
     
     func testGetPublicKeyRef(){
-        let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
-        keyPairService.generateKeyPair();
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        keyPair.generateKeyPair();
         
-        let keyBits = keyPairService.getPublicKeyRef()
+        let keyBits = keyPair.getPublicKeyRef()
         XCTAssert(keyBits != nil , "Has key ref");
     }
     
     func testMeasureGenerateKeyPair() {
         self.measureBlock() {
-            let keyPairService = KeyPairService(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+            let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
             
-            keyPairService.generateKeyPair();
+            keyPair.generateKeyPair();
             
-            XCTAssert(keyPairService.getPublicKeyRef() != nil, "Has public key");
-            XCTAssert(keyPairService.getPrivateKeyRef() != nil, "Has private key");
+            XCTAssert(keyPair.getPublicKeyRef() != nil, "Has public key");
+            XCTAssert(keyPair.getPrivateKeyRef() != nil, "Has private key");
         }
     }
     
     func testMeasureGenerateSymmetricKey() {
         self.measureBlock() {
-            let symmetricKeyService = SymmetricKeyService(symmetricTagIdentifier: "symmetric.key")
-            symmetricKeyService.generateSymmetricKey()
+            let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key")
+            symmetricKey.generateSymmetricKey()
             
-            self.assertSymmetricKey(symmetricKeyService)
+            self.assertSymmetricKey(symmetricKey)
         }
     }
     

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SymmetricKeyService: SecKeyService {
+class SymmetricKey: SecKeyBase {
     
     //the kSecAttrKeyTypeAES constant is not available in iOS :-(
     let KEY_TYPE_AES: NSNumber  =  2147483649

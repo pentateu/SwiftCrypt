@@ -9,8 +9,9 @@
 // http://railsware.com/blog/2014/06/26/creation-of-pure-swift-module
 
 import Foundation
+import Security
 
-class SecKeyService {
+class SecKeyBase {
 
     let NYES = NSNumber.numberWithBool(true)
     
