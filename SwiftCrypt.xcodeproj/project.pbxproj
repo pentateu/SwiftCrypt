@@ -21,8 +21,9 @@
 		53C362A519F0A11000595507 /* SymmetricKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3629F19F0A11000595507 /* SymmetricKey.swift */; };
 		53C362CA19F3C91B00595507 /* Cipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C362C919F3C91B00595507 /* Cipher.swift */; };
 		53C362CB19F3C91B00595507 /* Cipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C362C919F3C91B00595507 /* Cipher.swift */; };
-		53C362CE19F3CE2F00595507 /* module.map in Sources */ = {isa = PBXBuildFile; fileRef = 53C362CD19F3CE2F00595507 /* module.map */; };
-		53C362CF19F3CE2F00595507 /* module.map in Sources */ = {isa = PBXBuildFile; fileRef = 53C362CD19F3CE2F00595507 /* module.map */; };
+		53C362DB19F4638900595507 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C362DA19F4638900595507 /* SystemConfiguration.framework */; };
+		53C362DD19F4789600595507 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C362DC19F4789600595507 /* Status.swift */; };
+		53C362DE19F4789600595507 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C362DC19F4789600595507 /* Status.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +51,8 @@
 		53C3629E19F0A11000595507 /* SecKeyBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecKeyBase.swift; sourceTree = "<group>"; };
 		53C3629F19F0A11000595507 /* SymmetricKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SymmetricKey.swift; sourceTree = "<group>"; };
 		53C362C919F3C91B00595507 /* Cipher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cipher.swift; sourceTree = "<group>"; };
-		53C362CD19F3CE2F00595507 /* module.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.map; sourceTree = "<group>"; };
+		53C362DA19F4638900595507 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		53C362DC19F4789600595507 /* Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53C362DB19F4638900595507 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,7 +77,7 @@
 		53C3626F19F0A0E300595507 = {
 			isa = PBXGroup;
 			children = (
-				53C362CC19F3CE2F00595507 /* CommonCrypto */,
+				53C362DA19F4638900595507 /* SystemConfiguration.framework */,
 				53C3627A19F0A0E300595507 /* SwiftCrypt */,
 				53C3629019F0A0E400595507 /* SwiftCryptTests */,
 				53C3627919F0A0E300595507 /* Products */,
@@ -144,16 +147,9 @@
 				53C3629E19F0A11000595507 /* SecKeyBase.swift */,
 				53C3629F19F0A11000595507 /* SymmetricKey.swift */,
 				53C362C919F3C91B00595507 /* Cipher.swift */,
+				53C362DC19F4789600595507 /* Status.swift */,
 			);
 			name = Core;
-			sourceTree = "<group>";
-		};
-		53C362CC19F3CE2F00595507 /* CommonCrypto */ = {
-			isa = PBXGroup;
-			children = (
-				53C362CD19F3CE2F00595507 /* module.map */,
-			);
-			path = CommonCrypto;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,11 +254,11 @@
 			files = (
 				53C362CA19F3C91B00595507 /* Cipher.swift in Sources */,
 				53C3628019F0A0E300595507 /* ViewController.swift in Sources */,
+				53C362DD19F4789600595507 /* Status.swift in Sources */,
 				53C3627E19F0A0E300595507 /* AppDelegate.swift in Sources */,
 				53C362A019F0A11000595507 /* KeyPair.swift in Sources */,
 				53C362A219F0A11000595507 /* SecKeyBase.swift in Sources */,
 				53C362A419F0A11000595507 /* SymmetricKey.swift in Sources */,
-				53C362CE19F3CE2F00595507 /* module.map in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,10 +268,10 @@
 			files = (
 				53C362A319F0A11000595507 /* SecKeyBase.swift in Sources */,
 				53C3629419F0A0E400595507 /* SwiftCryptTests.swift in Sources */,
-				53C362CF19F3CE2F00595507 /* module.map in Sources */,
 				53C362CB19F3C91B00595507 /* Cipher.swift in Sources */,
 				53C362A119F0A11000595507 /* KeyPair.swift in Sources */,
 				53C362A519F0A11000595507 /* SymmetricKey.swift in Sources */,
+				53C362DE19F4789600595507 /* Status.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,7 +395,7 @@
 					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = CommonCrypto;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CommonCrypto";
 			};
 			name = Debug;
 		};
@@ -414,7 +410,7 @@
 					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = CommonCrypto;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CommonCrypto";
 			};
 			name = Release;
 		};
@@ -433,6 +429,7 @@
 				INFOPLIST_FILE = SwiftCryptTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CommonCrypto";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftCrypt.app/SwiftCrypt";
 			};
 			name = Debug;
@@ -448,6 +445,7 @@
 				INFOPLIST_FILE = SwiftCryptTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CommonCrypto";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftCrypt.app/SwiftCrypt";
 			};
 			name = Release;

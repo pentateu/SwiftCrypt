@@ -21,9 +21,59 @@ class SwiftCryptTests: XCTestCase {
         super.tearDown()
     }
     
-    func prettyPrint(data:NSData){
-        let strValue = NSString(data: data, encoding:NSUnicodeStringEncoding)
+    func prettyPrint(data:NSData, encoding:UInt = NSUnicodeStringEncoding) -> NSString{
+        let strValue = NSString(data: data, encoding:encoding)
         println(strValue)
+        return strValue
+    }
+    
+    func execTestEncrypt(value:String){
+        let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key")
+        symmetricKey.generateSymmetricKey()
+        
+        let str = value as NSString
+        
+        var cipher = Cipher(input: str.dataUsingEncoding(NSUTF8StringEncoding)!, symmetricKey: symmetricKey.getSymmetricKeyBits()!)
+        
+        let encrypted = cipher.encrypt()
+        
+        println("Encrypted result")
+        prettyPrint(encrypted!)
+        
+        cipher = Cipher(input: encrypted!, symmetricKey: symmetricKey.getSymmetricKeyBits()!)
+        
+        let decrypted = cipher.decrypt()
+        println("Decrypted result")
+        let decryptedStr = prettyPrint(decrypted!, encoding:NSUTF8StringEncoding)
+        println(decryptedStr)
+        
+        XCTAssert(str.isEqualToString(decryptedStr), "encrypted and decrypted values are equal")
+    }
+    
+    func testEncryptWithSmallText(){
+        execTestEncrypt("Hellow World!")
+    }
+    
+    func testEncryptWithSmallText_2(){
+        execTestEncrypt("Hellow World!...")
+    }
+    
+    func xtestEncryptWithBigText(){
+        
+        let bigText = createBigText(100)
+        
+        execTestEncrypt(bigText)
+    }
+    
+    func createBigText(size:Int) -> String {
+        let words = "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."
+        var bigString = words
+        
+        for index in 1 ... size {
+            bigString += words
+        }
+        
+        return bigString
     }
     
     func testWrapAndUnwrapSymmetricKey(){
