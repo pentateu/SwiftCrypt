@@ -13,11 +13,6 @@ import Security
 
 public class Cipher {
 
-    let chosenCipherBlockSize =	kCCBlockSizeAES128
-    
-    //Crypto reference.
-    private var context = UnsafeMutablePointer<CCCryptorRef>.alloc(1)
-    
     public enum Operation
     {
         case Encrypt, Decrypt
@@ -30,13 +25,28 @@ public class Cipher {
         }
     }
     
-    var input:NSData
-    var symmetricKey:NSData
+    private let chosenCipherBlockSize =	kCCBlockSizeAES128
     
-    init(input:NSData, symmetricKey:NSData){
-        self.input = input
+    //Crypto reference.
+    private var cryptorRefPointer = UnsafeMutablePointer<CCCryptorRef>.alloc(1)
+    
+    private var accumulator : [UInt8] = []
+    
+    var dataIn:NSData
+    var dataInLength:UInt
+    var symmetricKey:SymmetricKey
+    var keyBytes:UnsafePointer<Void>
+    
+    init(input:NSData, symmetricKey:SymmetricKey){
+        self.dataIn = input
         self.symmetricKey = symmetricKey
-        
+        self.dataInLength = UInt(dataIn.length)
+        self.keyBytes = symmetricKey.getSymmetricKeyBits()!.bytes
+    }
+    
+    convenience init(input:String, symmetricKey:SymmetricKey){
+        let str = input as NSString
+        self.init(input: str.dataUsingEncoding(NSUTF8StringEncoding)!, symmetricKey: symmetricKey)
     }
     
     func createCipher(operation:Operation, padding:Options) -> Status {
@@ -47,7 +57,7 @@ public class Cipher {
         // We don't want to toss padding on if we don't need to
         if (operation == .Encrypt) {
             if (padding.rawValue != UInt(kCCOptionECBMode)) {
-                if ((input.length % chosenCipherBlockSize) == 0) {
+                if ((dataIn.length % chosenCipherBlockSize) == 0) {
                     pkcs7 = Options.None
                 } else {
                     pkcs7 = Options.PKCS7Padding
@@ -59,10 +69,10 @@ public class Cipher {
         let rawStatus = CCCryptorCreate(operation.nativeValue(),
             CCAlgorithm(kCCAlgorithmAES128),
             CCOptions(pkcs7.toRaw()),
-            symmetricKey.bytes,
+            keyBytes,
             UInt(chosenCipherBlockSize),
             ivBuffer,
-            context
+            cryptorRefPointer
         )
         
         if let status = Status.fromRaw(rawStatus) {
@@ -83,29 +93,31 @@ public class Cipher {
     */
     func getOutputLength(inputByteCount : UInt, isFinal : Bool = false) -> UInt
     {
-        return CCCryptorGetOutputLength(context.memory, inputByteCount, isFinal)
+        return CCCryptorGetOutputLength(cryptorRefPointer.memory, inputByteCount, isFinal)
     }
     
-    func update() -> (UInt, Status) {
+    func update() -> Status {
         
         // Calculate byte block alignment for all calls through to and including final.
-        let outputLength = getOutputLength(UInt(input.length), isFinal: true)
-        let resultBuffer        = NSMutableData(length: Int(outputLength))
-        let resultBufferPointer = UnsafeMutablePointer<UInt8>(resultBuffer.mutableBytes)
+        let dataOutAvailable = getOutputLength(UInt(dataIn.length), isFinal: true)
+        var dataOut = Array<UInt8>(count:Int(dataOutAvailable), repeatedValue:0)
         
         var dataOutMoved = UInt(0)
         
         // Actually perform the encryption or decryption.
-        let rawStatus = CCCryptorUpdate(context.memory,
-            input.bytes,
-            UInt(input.length),
-            resultBufferPointer,
-            UInt(outputLength),
+        let rawStatus = CCCryptorUpdate(cryptorRefPointer.memory,
+            dataIn.bytes,
+            dataInLength,
+            &dataOut,
+            UInt(dataOutAvailable),
             &dataOutMoved
         )
         
         if let status = Status.fromRaw(rawStatus) {
-            return (dataOutMoved, status)
+            if(status == Status.Success){
+                accumulator += dataOut[0..<Int(dataOutMoved)]
+            }
+            return status
         }
         else {
             println("FATAL_ERROR: CCCryptorUpdate returned unexpected status (\(rawStatus)).")
@@ -125,47 +137,29 @@ public class Cipher {
         :param: byteArrayOut the output bffer
         :returns: a tuple containing the number of output bytes produced and the status (see Status)
     */
-    public func final() -> (UInt, Status, NSData) {
+    public func final() -> NSData? {
         
-        let outputLength        = getOutputLength(UInt(input.length), isFinal: true)
-        let resultBuffer        = NSMutableData(length: Int(outputLength))
-        let resultBufferPointer = UnsafeMutablePointer<UInt8>(resultBuffer.mutableBytes)
+        let dataOutAvailable    = getOutputLength(UInt(dataIn.length), isFinal: true)
+        var dataOut             = Array<UInt8>(count:Int(dataOutAvailable), repeatedValue:0)
+        var dataOutMoved        = UInt(0)
         
-        var dataOutMoved = UInt(0)
+        let rawStatus = CCCryptorFinal(cryptorRefPointer.memory, &dataOut, dataOutAvailable, &dataOutMoved)
         
-        let status = final(resultBufferPointer, byteCapacityOut: outputLength, byteCountOut: &dataOutMoved)
-        
-        if status == Status.Success {
-            let result = NSData(bytes:resultBuffer.bytes, length:Int(dataOutMoved))
-            return (dataOutMoved, status, result)
+        if let status = Status.fromRaw(rawStatus) {
+            
+            if status == Status.Success {
+                accumulator += dataOut[0..<Int(dataOutMoved)]
+                
+                let result = NSData(bytes:accumulator, length:accumulator.count)
+                return result
+            }
+            else{
+                println("FATAL_ERROR: CCCryptorFinal returned unexpected status (\(rawStatus)).")
+            }
+            
+            return nil
         }
         else{
-            println("FATAL_ERROR: CCCryptorFinal returned unexpected status (\(status.toRaw())).")
-            fatalError("CCCryptorUpdate returned unexpected status.")
-        }
-    }
-    
-    /**
-        Retrieves all remaining encrypted or decrypted data from this cryptor.
-    
-        :note: If the underlying algorithm is an block cipher and the padding option has
-        not been specified and the cumulative input to the cryptor has not been an integral
-        multiple of the block length this will fail with an alignment error.
-    
-        :note: This method updates the status property
-    
-        :param: bufferOut pointer to output buffer
-        :param: outByteCapacity capacity of the output buffer in bytes
-        :param: outByteCount on successful completion, the number of bytes written to the output buffer
-    */
-    public func final(bufferOut: UnsafeMutablePointer<Void>, byteCapacityOut : UInt, inout byteCountOut : UInt) -> Status {
-        let rawStatus = CCCryptorFinal(context.memory, bufferOut, byteCapacityOut, &byteCountOut)
-        if let status = Status.fromRaw(rawStatus)
-        {
-            return status
-        }
-        else
-        {
             println("FATAL_ERROR: CCCryptorFinal returned unexpected status (\(rawStatus)).")
             fatalError("CCCryptorUpdate returned unexpected status.")
         }
@@ -173,22 +167,17 @@ public class Cipher {
     
     func encryptAndDecrypt(operation:Operation) -> NSData? {
         var status = createCipher(operation, padding: Options.PKCS7Padding)
-        
-        if status == Status.Success {
-            
-            let (dataOutMoved, status) = update()
-            
-            if status == Status.Success {
-                let (byteMovedOut, status, result) = final()
-                
-                if status == Status.Success {
-                    return result
-                }
-            }
-            
+        if status != Status.Success {
+            return nil
         }
         
-        return nil
+        status = update()
+        if status != Status.Success {
+            return nil
+        }
+            
+        let result = final()
+        return result
     }
     
     public func encrypt() -> NSData? {

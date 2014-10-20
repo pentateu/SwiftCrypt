@@ -42,7 +42,7 @@ class SymmetricKey: SecKeyBase {
         }
     }
     
-    func generateSymmetricKey(){
+    func generateSymmetricKey() -> SymmetricKey {
         
         deleteSymmetricKey()
         
@@ -81,6 +81,7 @@ class SymmetricKey: SecKeyBase {
             println("Could not generate the symmetric key")
         }
         
+        return self
     }
     
     func getSymmetricKeyBits() -> NSData? {

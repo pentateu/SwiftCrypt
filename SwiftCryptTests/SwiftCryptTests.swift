@@ -11,9 +11,15 @@ import XCTest
 
 class SwiftCryptTests: XCTestCase {
     
+    var image: UIImage?
+    var imageData: NSData?
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        image = UIImage(named:"testImage.jpg")
+        imageData = UIImageJPEGRepresentation(image, 1)!
     }
     
     override func tearDown() {
@@ -27,42 +33,73 @@ class SwiftCryptTests: XCTestCase {
         return strValue
     }
     
-    func execTestEncrypt(value:String){
-        let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key")
-        symmetricKey.generateSymmetricKey()
+    func execTestEncryptImage() -> NSData {
+        let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key").generateSymmetricKey()
         
-        let str = value as NSString
-        
-        var cipher = Cipher(input: str.dataUsingEncoding(NSUTF8StringEncoding)!, symmetricKey: symmetricKey.getSymmetricKeyBits()!)
+        var cipher = Cipher(input: imageData!, symmetricKey: symmetricKey)
         
         let encrypted = cipher.encrypt()
         
-        println("Encrypted result")
-        prettyPrint(encrypted!)
+        let encryptedImage = UIImage(data:encrypted!)
         
-        cipher = Cipher(input: encrypted!, symmetricKey: symmetricKey.getSymmetricKeyBits()!)
+        cipher = Cipher(input: encrypted!, symmetricKey: symmetricKey)
+        
+        let decrypted = cipher.decrypt()!
+        
+        XCTAssert(decrypted.isEqualToData(imageData!), "encrypted and decrypted images are equal")
+        
+        return decrypted
+    }
+    
+    func testEncryptImage(){
+        let image = UIImage(named:"testImage.jpg")
+        
+        let imageData = UIImageJPEGRepresentation(image, 1)!
+        
+        let decrypted = execTestEncryptImage()
+        
+        let decryptedImage = UIImage(data:decrypted)
+    }
+    
+    func execTestEncryptString(value:String){
+        let print = false
+        
+        let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key").generateSymmetricKey()
+        
+        var cipher = Cipher(input: value, symmetricKey: symmetricKey)
+        
+        let encrypted = cipher.encrypt()
+        
+        if print {
+            println("Encrypted result")
+            prettyPrint(encrypted!)
+        }
+        
+        cipher = Cipher(input: encrypted!, symmetricKey: symmetricKey)
         
         let decrypted = cipher.decrypt()
-        println("Decrypted result")
-        let decryptedStr = prettyPrint(decrypted!, encoding:NSUTF8StringEncoding)
-        println(decryptedStr)
+        
+        let decryptedStr = NSString(data: decrypted!, encoding:NSUTF8StringEncoding)
+        
+        if print {
+            println("Decrypted result")
+            println(decryptedStr)
+        }
+        
+        let str = value as NSString
         
         XCTAssert(str.isEqualToString(decryptedStr), "encrypted and decrypted values are equal")
     }
     
     func testEncryptWithSmallText(){
-        execTestEncrypt("Hellow World!")
+        execTestEncryptString("Hellow World!")
     }
     
-    func testEncryptWithSmallText_2(){
-        execTestEncrypt("Hellow World!...")
-    }
-    
-    func xtestEncryptWithBigText(){
+    func testEncryptWithBigText(){
         
         let bigText = createBigText(100)
         
-        execTestEncrypt(bigText)
+        execTestEncryptString(bigText)
     }
     
     func createBigText(size:Int) -> String {
@@ -237,6 +274,18 @@ class SwiftCryptTests: XCTestCase {
     func testMeasureWrapAndUnwrapSymmetricKey() {
         self.measureBlock() {
             self.testWrapAndUnwrapSymmetricKey()
+        }
+    }
+    
+    func testMeasureEncryptWithBigText() {
+        self.measureBlock() {
+            self.testEncryptWithBigText()
+        }
+    }
+    
+    func testMeasureEncryptImage() {
+        self.measureBlock() {
+            let result = self.execTestEncryptImage()
         }
     }
     

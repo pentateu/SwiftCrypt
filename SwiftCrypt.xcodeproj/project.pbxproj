@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5385A44919F511370075346D /* testImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5385A44819F511370075346D /* testImage.jpg */; };
+		5385A44A19F514A30075346D /* testImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 5385A44819F511370075346D /* testImage.jpg */; };
 		53C3627E19F0A0E300595507 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3627D19F0A0E300595507 /* AppDelegate.swift */; };
 		53C3628019F0A0E300595507 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C3627F19F0A0E300595507 /* ViewController.swift */; };
 		53C3628319F0A0E300595507 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53C3628119F0A0E300595507 /* Main.storyboard */; };
@@ -37,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5385A44819F511370075346D /* testImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImage.jpg; sourceTree = "<group>"; };
 		53C3627819F0A0E300595507 /* SwiftCrypt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftCrypt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53C3627C19F0A0E300595507 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		53C3627D19F0A0E300595507 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				53C3629319F0A0E400595507 /* SwiftCryptTests.swift */,
+				5385A44819F511370075346D /* testImage.jpg */,
 				53C3629119F0A0E400595507 /* Supporting Files */,
 			);
 			path = SwiftCryptTests;
@@ -232,6 +236,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5385A44A19F514A30075346D /* testImage.jpg in Resources */,
 				53C3628319F0A0E300595507 /* Main.storyboard in Resources */,
 				53C3628819F0A0E300595507 /* LaunchScreen.xib in Resources */,
 				53C3628519F0A0E300595507 /* Images.xcassets in Resources */,
@@ -242,6 +247,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5385A44919F511370075346D /* testImage.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +475,7 @@
 				53C3629919F0A0E400595507 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		53C3629A19F0A0E400595507 /* Build configuration list for PBXNativeTarget "SwiftCryptTests" */ = {
 			isa = XCConfigurationList;
@@ -477,6 +484,7 @@
 				53C3629C19F0A0E400595507 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

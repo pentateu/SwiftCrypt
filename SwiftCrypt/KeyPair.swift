@@ -109,34 +109,5 @@ class KeyPair: SecKeyBase {
     func getPrivateKeyBits() -> NSData? {
         return getKeyBits(privateTag)
     }
-    
-    
-    
-    /*
-    
-    
-    
-    
-    
-    
-    - (SecKeyRef)getKeyRefWithPersistentKeyRef:(CFTypeRef)persistentRef {
-    OSStatus sanityCheck = noErr;
-    SecKeyRef keyRef = NULL;
-    
-    LOGGING_FACILITY(persistentRef != NULL, @"persistentRef object cannot be NULL." );
-    
-    NSMutableDictionary * queryKey = [[NSMutableDictionary alloc] init];
-    
-    // Set the SecKeyRef query dictionary.
-    [queryKey setObject:(id)persistentRef forKey:(id)kSecValuePersistentRef];
-    [queryKey setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnRef];
-    
-    // Get the persistent key reference.
-    sanityCheck = SecItemCopyMatching((CFDictionaryRef)queryKey, (CFTypeRef *)&keyRef);
-    [queryKey release];
-    
-    return keyRef;
-    }
-    */
 
 }
