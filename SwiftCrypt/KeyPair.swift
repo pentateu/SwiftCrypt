@@ -88,7 +88,12 @@ class KeyPair: SecKeyBase {
         if publicKeyRef == nil {
             let query = createBaiscKeyQueryParams(publicTag)
             query.setObject(NYES, forKey: kSecReturnRef as String)
-            publicKeyRef = (queryObject(query) as! SecKeyRef)
+            
+            var queryResult:AnyObject? = queryObject(query)
+            
+            if let queryResultObj:AnyObject = queryResult {
+                publicKeyRef = queryResultObj as! SecKeyRef
+            }
         }
         return publicKeyRef
     }
@@ -97,7 +102,12 @@ class KeyPair: SecKeyBase {
         if privateKeyRef == nil {
             let query = createBaiscKeyQueryParams(privateTag)
             query.setObject(NYES, forKey: kSecReturnRef as String)
-            privateKeyRef = (queryObject(query) as! SecKeyRef)
+            
+            var queryResult:AnyObject? = queryObject(query)
+            
+            if let queryResultObj:AnyObject = queryResult {
+                privateKeyRef = queryResultObj as! SecKeyRef
+            }
         }
         return privateKeyRef
     }
