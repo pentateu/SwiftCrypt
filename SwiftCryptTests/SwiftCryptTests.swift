@@ -30,7 +30,7 @@ class SwiftCryptTests: XCTestCase {
     func prettyPrint(data:NSData, encoding:UInt = NSUnicodeStringEncoding) -> NSString{
         let strValue = NSString(data: data, encoding:encoding)
         println(strValue)
-        return strValue
+        return strValue!
     }
     
     func execTestEncryptImage() -> NSData {
@@ -40,6 +40,7 @@ class SwiftCryptTests: XCTestCase {
         
         let encrypted = cipher.encrypt()
         
+        //encryptedImage is used just during debug to visualize the image in the quickview ;-)
         let encryptedImage = UIImage(data:encrypted!)
         
         cipher = Cipher(input: encrypted!, symmetricKey: symmetricKey)
@@ -88,7 +89,7 @@ class SwiftCryptTests: XCTestCase {
         
         let str = value as NSString
         
-        XCTAssert(str.isEqualToString(decryptedStr), "encrypted and decrypted values are equal")
+        XCTAssert(str == decryptedStr, "encrypted and decrypted values are equal")
     }
     
     func testEncryptWithSmallText(){
@@ -192,7 +193,7 @@ class SwiftCryptTests: XCTestCase {
         
         XCTAssert(dic.count == 3, "Has right number of items");
         
-        XCTAssert(dic.objectForKey(kSecAttrApplicationTag) as NSData == keyPair.publicTag, "Has correct tag")
+        XCTAssert(dic.objectForKey(kSecAttrApplicationTag) as! NSData == keyPair.publicTag, "Has correct tag")
     }
     
     func testCreatePrivateKeyQueryParams() {
@@ -202,7 +203,7 @@ class SwiftCryptTests: XCTestCase {
         
         XCTAssert(dic.count == 3, "Has right number of items");
         
-        XCTAssert(dic.objectForKey(kSecAttrApplicationTag) as NSData == keyPair.privateTag, "Has correct tag")
+        XCTAssert(dic.objectForKey(kSecAttrApplicationTag) as! NSData == keyPair.privateTag, "Has correct tag")
     }
     
     func testGenerateKeyPair() {

@@ -13,7 +13,7 @@ import Security
 
 class SecKeyBase {
 
-    let NYES = NSNumber.numberWithBool(true)
+    let NYES = NSNumber(bool: true)
     
     var keyType: AnyObject
     
@@ -24,7 +24,7 @@ class SecKeyBase {
     func deleteItem(query:NSMutableDictionary) -> Bool{
         let sanityCheck = SecItemDelete(query as CFDictionaryRef)
         
-        if(sanityCheck == noErr || Int(sanityCheck) == errSecItemNotFound){
+        if(sanityCheck == noErr || sanityCheck == errSecItemNotFound){
             println("Item deleted with success!");
             return true
         }
@@ -36,9 +36,9 @@ class SecKeyBase {
     
     func createBaiscKeyQueryParams(tag:NSData) -> NSMutableDictionary {
         let query: NSMutableDictionary = NSMutableDictionary()
-        query.setObject(kSecClassKey, forKey:kSecClass)
-        query.setObject(tag, forKey:kSecAttrApplicationTag)
-        query.setObject(keyType, forKey:kSecAttrKeyType)
+        query.setObject(kSecClassKey, forKey:kSecClass as String)
+        query.setObject(tag, forKey:kSecAttrApplicationTag as String)
+        query.setObject(keyType, forKey:kSecAttrKeyType as String)
         return query
     }
     
@@ -60,15 +60,15 @@ class SecKeyBase {
     
     func getKeyBits(tag:NSData) -> NSData? {
         let query = createBaiscKeyQueryParams(tag)
-        query.setObject(NYES, forKey: kSecReturnData)
+        query.setObject(NYES, forKey: kSecReturnData as String)
         let keyBits = queryObject(query) as? NSData
         return keyBits
     }
     
     func getPersistentKeyRef(keyRef:SecKeyRef) -> CFTypeRef? {
         let query: NSMutableDictionary = NSMutableDictionary()
-        query.setObject(keyRef, forKey:kSecValueRef)
-        query.setObject(NYES, forKey:kSecReturnPersistentRef)
+        query.setObject(keyRef, forKey:kSecValueRef as String)
+        query.setObject(NYES, forKey:kSecReturnPersistentRef as String)
         
         let persistentRef: CFTypeRef? = queryObject(query) as CFTypeRef?
         return persistentRef

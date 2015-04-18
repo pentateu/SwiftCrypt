@@ -10,8 +10,8 @@ import Foundation
 
 class KeyPair: SecKeyBase {
 
-    let kSecPrivateKeyAttrsValue = kSecPrivateKeyAttrs.takeUnretainedValue() as NSCopying
-    let kSecPublicKeyAttrsValue = kSecPublicKeyAttrs.takeUnretainedValue() as NSCopying
+    let kSecPrivateKeyAttrsValue = kSecPrivateKeyAttrs.takeUnretainedValue() as! NSCopying
+    let kSecPublicKeyAttrsValue = kSecPublicKeyAttrs.takeUnretainedValue() as! NSCopying
     
     //The example uses 512 . I was trying 1024
     let keySize:CFNumberRef = 1024
@@ -48,19 +48,19 @@ class KeyPair: SecKeyBase {
         
         // Set top level dictionary for the keypair.
         let keyPairAttr: NSMutableDictionary = NSMutableDictionary()
-        keyPairAttr.setObject(keyType, forKey:kSecAttrKeyType)
+        keyPairAttr.setObject(keyType, forKey:kSecAttrKeyType as String)
         
-        keyPairAttr.setObject(keySize, forKey:kSecAttrKeySizeInBits)
+        keyPairAttr.setObject(keySize, forKey:kSecAttrKeySizeInBits as String)
         
         // Set the private key dictionary.
         let privateKeyAttr: NSMutableDictionary = NSMutableDictionary()
-        privateKeyAttr.setObject(NYES, forKey: kSecAttrIsPermanent)
-        privateKeyAttr.setObject(privateTag, forKey: kSecAttrApplicationTag)
+        privateKeyAttr.setObject(NYES, forKey: kSecAttrIsPermanent as String)
+        privateKeyAttr.setObject(privateTag, forKey: kSecAttrApplicationTag as String)
         
         // Set the public key dictionary.
         let publicKeyAttr: NSMutableDictionary = NSMutableDictionary()
-        publicKeyAttr.setObject(NYES, forKey: kSecAttrIsPermanent)
-        publicKeyAttr.setObject(publicTag, forKey: kSecAttrApplicationTag)
+        publicKeyAttr.setObject(NYES, forKey: kSecAttrIsPermanent as String)
+        publicKeyAttr.setObject(publicTag, forKey: kSecAttrApplicationTag as String)
         
         // Set attributes to top level dictionary.
         keyPairAttr.setObject(privateKeyAttr, forKey:kSecPrivateKeyAttrsValue)
@@ -87,8 +87,8 @@ class KeyPair: SecKeyBase {
     func getPublicKeyRef() -> SecKeyRef?{
         if publicKeyRef == nil {
             let query = createBaiscKeyQueryParams(publicTag)
-            query.setObject(NYES, forKey: kSecReturnRef)
-            publicKeyRef = queryObject(query) as? SecKeyRef
+            query.setObject(NYES, forKey: kSecReturnRef as String)
+            publicKeyRef = (queryObject(query) as! SecKeyRef)
         }
         return publicKeyRef
     }
@@ -96,8 +96,8 @@ class KeyPair: SecKeyBase {
     func getPrivateKeyRef() -> SecKeyRef?{
         if privateKeyRef == nil {
             let query = createBaiscKeyQueryParams(privateTag)
-            query.setObject(NYES, forKey: kSecReturnRef)
-            privateKeyRef = queryObject(query) as? SecKeyRef
+            query.setObject(NYES, forKey: kSecReturnRef as String)
+            privateKeyRef = (queryObject(query) as! SecKeyRef)
         }
         return privateKeyRef
     }

@@ -48,28 +48,28 @@ class SymmetricKey: SecKeyBase {
         
         let symmetricKeyAttr = createBaiscKeyQueryParams(symmetricTag)
         
-        symmetricKeyAttr.setObject(effectiveKeySize, forKey: kSecAttrKeySizeInBits)
-        symmetricKeyAttr.setObject(effectiveKeySize, forKey: kSecAttrEffectiveKeySize)
+        symmetricKeyAttr.setObject(effectiveKeySize, forKey: kSecAttrKeySizeInBits as String)
+        symmetricKeyAttr.setObject(effectiveKeySize, forKey: kSecAttrEffectiveKeySize as String)
         
-        symmetricKeyAttr.setObject(kCFBooleanTrue, forKey: kSecAttrCanEncrypt)
-        symmetricKeyAttr.setObject(kCFBooleanTrue, forKey: kSecAttrCanDecrypt)
+        symmetricKeyAttr.setObject(kCFBooleanTrue, forKey: kSecAttrCanEncrypt as String)
+        symmetricKeyAttr.setObject(kCFBooleanTrue, forKey: kSecAttrCanDecrypt as String)
         
-        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanDerive)
-        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanSign)
-        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanVerify)
-        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanWrap)
-        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanUnwrap)
+        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanDerive as String)
+        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanSign as String)
+        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanVerify as String)
+        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanWrap as String)
+        symmetricKeyAttr.setObject(kCFBooleanFalse, forKey: kSecAttrCanUnwrap as String)
         
         let symmetricKey = NSMutableData(length: Int(cipherKeySize))
-        var sanityCheck = SecRandomCopyBytes(kSecRandomDefault, UInt(cipherKeySize), UnsafeMutablePointer<UInt8>(symmetricKey.mutableBytes))
+        var sanityCheck = SecRandomCopyBytes(kSecRandomDefault, cipherKeySize, UnsafeMutablePointer<UInt8>(symmetricKey!.mutableBytes))
         
         if( sanityCheck == noErr){
-            symmetricKeyRef = NSData(data: symmetricKey)
+            symmetricKeyRef = NSData(data: symmetricKey!)
             
             prettyPrint(symmetricKeyRef!)
             
             // Add the wrapped key data to the container dictionary.
-            symmetricKeyAttr.setObject(symmetricKey, forKey:kSecValueData)
+            symmetricKeyAttr.setObject(symmetricKey!, forKey:kSecValueData as String)
             
             // Add the symmetric key to the keychain.
             sanityCheck = SecItemAdd(symmetricKeyAttr as CFDictionaryRef, nil)
@@ -108,15 +108,15 @@ class SymmetricKey: SecKeyBase {
             
             let cipherBufferSize    = SecKeyGetBlockSize(publicKey)
             let cipherBuffer        = NSMutableData(length: Int(cipherBufferSize))
-            let cipherBufferPointer = UnsafeMutablePointer<UInt8>(cipherBuffer.mutableBytes)
-            var cipherBufferSizeResult = UInt(cipherBufferSize)
+            let cipherBufferPointer = UnsafeMutablePointer<UInt8>(cipherBuffer!.mutableBytes)
+            var cipherBufferSizeResult = cipherBufferSize
             
             // Encrypt using the public key.
-            let sanityCheck = SecKeyEncrypt(publicKey, UInt32(typeOfWrapPadding), contentPointer, UInt(contentSize), cipherBufferPointer, &cipherBufferSizeResult)
+            let sanityCheck = SecKeyEncrypt(publicKey, UInt32(typeOfWrapPadding), contentPointer, contentSize, cipherBufferPointer, &cipherBufferSizeResult)
             
             if(sanityCheck == noErr){
                 println("symmetric key encrypted succesfully!")
-                result = NSData(bytes:cipherBuffer.bytes, length:Int(cipherBufferSizeResult))
+                result = NSData(bytes:cipherBuffer!.bytes, length:Int(cipherBufferSizeResult))
             }
             else{
                 println("could not encrypted symmetric key :-(")
@@ -132,21 +132,21 @@ class SymmetricKey: SecKeyBase {
         let cipherBufferSize    = SecKeyGetBlockSize(privateKey)
         let keyBufferSize       = wrappedSymmetricKey.length
         let keyBuffer           = NSMutableData(length: Int(keyBufferSize))
-        let keyBufferPointer    = UnsafeMutablePointer<UInt8>(keyBuffer.mutableBytes)
+        let keyBufferPointer    = UnsafeMutablePointer<UInt8>(keyBuffer!.mutableBytes)
         let ciphertPointer      = UnsafePointer<UInt8>(wrappedSymmetricKey.bytes)
-        var keyBufferSizeResult = UInt(keyBufferSize)
+        var keyBufferSizeResult = keyBufferSize
         
         // Decrypt using the private key.
         let sanityCheck = SecKeyDecrypt(privateKey, UInt32(typeOfWrapPadding),
             ciphertPointer,
-            UInt(cipherBufferSize),
+            cipherBufferSize,
             keyBufferPointer,
             &keyBufferSizeResult
         )
         
         if(sanityCheck == noErr){
             println("symmetric key decrypted succesfully!")
-            result = NSData(bytes:keyBuffer.bytes, length:Int(keyBufferSizeResult))
+            result = NSData(bytes:keyBuffer!.bytes, length:Int(keyBufferSizeResult))
         }
         else{
             println("could not decrypt symmetric key :-(")

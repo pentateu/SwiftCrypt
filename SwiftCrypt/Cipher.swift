@@ -33,14 +33,14 @@ public class Cipher {
     private var accumulator : [UInt8] = []
     
     var dataIn:NSData
-    var dataInLength:UInt
+    var dataInLength:Int
     var symmetricKey:SymmetricKey
     var keyBytes:UnsafePointer<Void>
     
     init(input:NSData, symmetricKey:SymmetricKey){
         self.dataIn = input
         self.symmetricKey = symmetricKey
-        self.dataInLength = UInt(dataIn.length)
+        self.dataInLength = dataIn.length
         self.keyBytes = symmetricKey.getSymmetricKeyBits()!.bytes
     }
     
@@ -70,7 +70,7 @@ public class Cipher {
             CCAlgorithm(kCCAlgorithmAES128),
             CCOptions(pkcs7.toRaw()),
             keyBytes,
-            UInt(chosenCipherBlockSize),
+            chosenCipherBlockSize,
             ivBuffer,
             cryptorRefPointer
         )
@@ -91,7 +91,7 @@ public class Cipher {
         :param: inputByteCount number of bytes that will be input.
         :param: isFinal true if buffer to be input will be the last input buffer, false otherwise.
     */
-    func getOutputLength(inputByteCount : UInt, isFinal : Bool = false) -> UInt
+    func getOutputLength(inputByteCount : Int, isFinal : Bool = false) -> Int
     {
         return CCCryptorGetOutputLength(cryptorRefPointer.memory, inputByteCount, isFinal)
     }
@@ -99,17 +99,17 @@ public class Cipher {
     func update() -> Status {
         
         // Calculate byte block alignment for all calls through to and including final.
-        let dataOutAvailable = getOutputLength(UInt(dataIn.length), isFinal: true)
+        let dataOutAvailable = getOutputLength(dataIn.length, isFinal: true)
         var dataOut = Array<UInt8>(count:Int(dataOutAvailable), repeatedValue:0)
         
-        var dataOutMoved = UInt(0)
+        var dataOutMoved:Int = 0
         
         // Actually perform the encryption or decryption.
         let rawStatus = CCCryptorUpdate(cryptorRefPointer.memory,
             dataIn.bytes,
             dataInLength,
             &dataOut,
-            UInt(dataOutAvailable),
+            dataOutAvailable,
             &dataOutMoved
         )
         
@@ -139,9 +139,9 @@ public class Cipher {
     */
     public func final() -> NSData? {
         
-        let dataOutAvailable    = getOutputLength(UInt(dataIn.length), isFinal: true)
+        let dataOutAvailable    = getOutputLength(dataIn.length, isFinal: true)
         var dataOut             = Array<UInt8>(count:Int(dataOutAvailable), repeatedValue:0)
-        var dataOutMoved        = UInt(0)
+        var dataOutMoved:Int    = 0
         
         let rawStatus = CCCryptorFinal(cryptorRefPointer.memory, &dataOut, dataOutAvailable, &dataOutMoved)
         
