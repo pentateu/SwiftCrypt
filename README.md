@@ -73,3 +73,44 @@ func testEncryptString(value:String){
         return decrypted
     }
 ```
+
+## Wrap and UnWrap the Symmetric Key
+
+``` Swift
+    func testWrapAndUnwrapSymmetricKey(){
+        //Create a keyPair object with these two tags
+        let keyPair = KeyPair(privateTagIdentifier: "private.key", pulicTagIdentifier: "public.key")
+        
+        //generate a new Key Pair
+        keyPair.generateKeyPair();
+        
+        let symmetricKey = SymmetricKey(symmetricTagIdentifier: "symmetric.key")
+        //generate a new symmetricKey
+        symmetricKey.generateSymmetricKey()
+        
+        println("symmetric key (plain): ")
+        prettyPrint(symmetricKey.getSymmetricKeyBits()!)
+        
+        //wrap the symmetricKey with the public key
+        let wrappedKey = symmetricKey.wrapSymmetricKey(keyPair.getPublicKeyRef()!)
+        
+        println("symmetric key (wrappedKey): ")
+        prettyPrint(wrappedKey!)
+        
+        XCTAssert(wrappedKey != nil, "Has symmetricKeyRef")
+        XCTAssert(wrappedKey?.length == 128, "Result the right size")
+        
+        //unwrap the symmetricKey using the privateKey
+        let unwrappedKey = symmetricKey.unwrapSymmetricKey(keyPair.getPrivateKeyRef()!, wrappedSymmetricKey: wrappedKey!)
+        
+        println("symmetric key (unwrappedKey): ")
+        prettyPrint(unwrappedKey!)
+        
+        //check if the unwrapped key is the same as the original value
+        var boolCheck:Bool = false
+        if let originalKey = symmetricKey.getSymmetricKeyBits() {
+            boolCheck = originalKey.isEqualToData(unwrappedKey!)
+        }
+        XCTAssert(boolCheck, "wrappedKey and unwrappedKey are equal")
+    }
+```
