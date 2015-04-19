@@ -3,7 +3,7 @@ SwiftCrypt
 
 Crypto services written in Swift
 
-## How do you Encrypt and Decrypt an Text ?
+## Encrypt and Decrypt -> Text
 ``` Swift
 func testEncryptString(value:String){
         //Create a symmetricKey with the tag: "my.symmetric.key.tag"
@@ -39,7 +39,7 @@ func testEncryptString(value:String){
     }
 ```
 
-## How do you Encrypt and Decrypt an Image ?
+## Encrypt and Decrypt -> Image 
 ``` Swift
   func testEncryptImage() -> NSData {
         //load an image file
